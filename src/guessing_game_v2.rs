@@ -12,6 +12,8 @@ fn main() {
   // the kind of range expression we're using here takes the form start..=end
   let secret_number = rand::thread_rng().gen_range(1..=100);
 
+  println!("The secret number is: {secret_number}");
+
   // the loop keyword creates an infinite loop
   loop {
     println!("Please input your guess.");
@@ -23,13 +25,8 @@ fn main() {
       .expect("Failed to read line");
 
     // shadowing lets us reuse the guess variable name rather than forcig us to create two unique variables
-    // switch from an expect call to a match expression to move from crashing on an error to handling an error
-    // if parse is able to turn the string into number it will return an Ok
-    // if parse is NOT able to turn the string into number it will return an Err
-    let guess: u32 = match guess.trim().parse() {
-      Ok(num) => num,
-      Err(_) => continue,
-    };
+    // bind this new variable to the expression guess.trim().parse()
+    let guess: u32 = guess.trim().parse().expect("Please type a number!");
 
     println!("You guessed: {guess}");
 
