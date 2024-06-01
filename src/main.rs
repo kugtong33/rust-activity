@@ -1,30 +1,34 @@
-// the prelude is the list of things that Rust automatically imports into every Rust program.
-// preludes can be seen as a pattern to make using multiple types more convenient
-use std::io;
+use std::{cmp::Ordering, io};
+// The Rng trait defines methods that random number generators implement, and this trait must be in scope for us to use those methods.
+// 
+use rand::Rng;
 
-// fn syntax declares a function
-// () indicates there are no parameters
-// {} is the body of the function
+
 fn main() {
-    println!("Guess the number!");
+  println!("Guess the number");
 
-    println!("Please input your guess");
+  // we call the rand::thread_rng function that gives us the particular random number generator we're going to use: one that is local to the current thread of execution and is seeded by the operating system
+  // the gen_range() method takes a range expression as an argument and generates a random number in the range
+  // the kind of range expression we're using here takes the form start..=end
+  let secret_number = rand::thread_rng().gen_range(1..=100);
 
-    // in Rust, variables are immutable by default
-    // once we give variable a value, that value won't change
-    // to make a variable mutable, we add mut before the variable name
-    let mut guess = String::new();
+  println!("The secret number is: {secret_number}");
 
-    io::stdin()
-        // the string argument needs to be mutable so the method can change the string's content
-        // the & indicates that this argument is a reference
-        // which gives you a way to let multiple parts of your code access one piece of data without needing to copy that data into memory multiple times
-        // Result is an enumeration, which is a type that can be in one of multiple possible states
-        .read_line(&mut guess)
-        // an instance of Result has an expect method that you can call
-        // If Result is an Err, expect() will cause the program to crash and display the message
-        // if Result is an Ok value, expect() will take the return value that Ok is holding 
-        .expect("failed to read line");
+  println!("Please input your guess.");
 
-    println!("you guessed: {guess}");
+  let mut guess = String::new();
+
+  io::stdin()
+    .read_line(&mut guess)
+    .expect("Failed to read line");
+
+  println!("You guessed: {guess}");
+
+  // given 50 as input and 38 as generated
+  // match expression gets the Ordering::Greater, 50 > 38
+  match guess.cmp(&secret_number) {
+    Ordering::Less => println!("Too small!"),
+    Ordering::Greater => println!("Too big!"),
+    Ordering::Equal => println!("You win!"),
+  }
 }
